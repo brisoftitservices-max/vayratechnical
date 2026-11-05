@@ -2,6 +2,7 @@ import React from 'react';
 import { Phone, MapPin, Mail, ShieldCheck } from 'lucide-react';
 import { Language } from '../types';
 import { translations } from '../data/translations';
+import { VayraLogo } from './VayraLogo';
 
 interface FooterProps {
   language: Language;
@@ -18,11 +19,7 @@ export const Footer: React.FC<FooterProps> = ({ language }) => {
           {/* Brand & Legal Entity Column */}
           <div className="lg:col-span-2 space-y-3">
             <div className="flex items-center gap-3">
-              <img
-                src="/logo.svg"
-                alt="Vayra Logo"
-                className="w-10 h-10 rounded-full bg-white/5 p-0.5 shrink-0"
-              />
+              <VayraLogo size={40} className="bg-white/5 p-0.5 rounded-full shrink-0" />
               <div>
                 <span className="text-base font-bold text-white tracking-tight block">
                   {t.brandName}
