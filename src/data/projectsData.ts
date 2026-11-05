@@ -1,4 +1,8 @@
 import { ProjectItem } from '../types';
+import heroHvacImg from '../assets/images/hero_hvac_mep_1793794632219.jpg';
+import commercialMepImg from '../assets/images/project_commercial_mep_1793794632182.jpg';
+import luxuryVillaAcImg from '../assets/images/project_luxury_villa_ac_1793794632873.jpg';
+import industrialChillerImg from '../assets/images/project_industrial_chiller_1793794633150.jpg';
 
 export const projectsData: ProjectItem[] = [
   {
@@ -10,7 +14,7 @@ export const projectsData: ProjectItem[] = [
     locationEn: 'Al Reem Island, Abu Dhabi',
     locationAr: 'جزيرة الريم، أبوظبي',
     category: 'hvac',
-    imageUrl: '/src/assets/images/hero_hvac_mep_1793794632219.jpg',
+    imageUrl: heroHvacImg,
     metricsEn: '26% reduction in peak chiller kilowatt draw',
     metricsAr: 'تخفيض بنسبة 26% في استهلاك طاقة مبردات التكييف المركزية',
     descriptionEn: 'Turnkey overhaul and precision pipework installation of three 450-TR high-efficiency air-cooled chillers, variable speed primary pumping system, and galvanized steel distribution ducts with aerodynamic acoustic silencers.',
@@ -38,7 +42,7 @@ export const projectsData: ProjectItem[] = [
     locationEn: 'Abu Dhabi Global Market (ADGM), Al Maryah Island',
     locationAr: 'سوق أبوظبي العالمي (ADGM)، جزيرة الماريه',
     category: 'commercial',
-    imageUrl: '/src/assets/images/project_commercial_mep_1793794632182.jpg',
+    imageUrl: commercialMepImg,
     metricsEn: 'Delivered in 42 days with zero site snags',
     metricsAr: 'تسليم المشروع خلال 42 يوماً بدون أي ملاحظات استلام',
     descriptionEn: 'Comprehensive MEP fit-out across 14,000 sq. ft. of Grade-A office space featuring exposed matte black spiral ductwork, architectural suspended LED fixtures, acoustic drywall partitions, and independent VRF climate zones for executive suites.',
@@ -66,7 +70,7 @@ export const projectsData: ProjectItem[] = [
     locationEn: 'Saadiyat Beach Villas, Abu Dhabi',
     locationAr: 'فلل شاطئ السعديات، أبوظبي',
     category: 'residential',
-    imageUrl: '/src/assets/images/project_luxury_villa_ac_1793794632873.jpg',
+    imageUrl: luxuryVillaAcImg,
     metricsEn: 'Whisper-quiet <24 dBA acoustic level across bedrooms',
     metricsAr: 'مستوى هدوء فائق أقل من 24 ديسيبل في غرف النوم والصالات',
     descriptionEn: 'Design and commissioning of inverter-driven VRF air conditioning for a 12,500 sq. ft. private estate. Features architectural borderless ceiling slot diffusers, automated humidity regulation, fresh air heat recovery ventilators (HRV), and smartphone climate controls.',
@@ -94,7 +98,7 @@ export const projectsData: ProjectItem[] = [
     locationEn: 'ICAD (Industrial City of Abu Dhabi), Mussafah',
     locationAr: 'مدينة أبوظبي الصناعية (ICAD)، المصفح',
     category: 'industrial',
-    imageUrl: '/src/assets/images/project_industrial_chiller_1793794633150.jpg',
+    imageUrl: industrialChillerImg,
     metricsEn: 'Continuous 99.98% system uptime throughout summer peak',
     metricsAr: 'جاهزية تشغيل مستمرة بنسبة 99.98% خلال ذروة الصيف',
     descriptionEn: 'Heavy-duty industrial MEP execution including central chilled water pump skid integration, motor control center (MCC) switchboards with SCADA telemetry, dual redundant power feeds, and high-pressure glycol cooling circuits.',
@@ -122,7 +126,7 @@ export const projectsData: ProjectItem[] = [
     locationEn: 'Yas Island, Abu Dhabi',
     locationAr: 'جزيرة ياس، أبوظبي',
     category: 'commercial',
-    imageUrl: '/src/assets/images/project_commercial_mep_1793794632182.jpg',
+    imageUrl: commercialMepImg,
     metricsEn: 'Full Civil Defense life-safety approval on first inspection',
     metricsAr: 'اعتماد رسمي كامل من الدفاع المدني للسلامة من أول زيارة تفتيش',
     descriptionEn: 'Engineering, supply, and installation of rooftop package units, kitchen ecology filtration systems, smoke extraction shafts, and automated fire dampers connected to the central life-safety alarm panel.',
@@ -150,7 +154,7 @@ export const projectsData: ProjectItem[] = [
     locationEn: 'Khalifa City, Abu Dhabi',
     locationAr: 'مدينة خليفة، أبوظبي',
     category: 'residential',
-    imageUrl: '/src/assets/images/project_luxury_villa_ac_1793794632873.jpg',
+    imageUrl: luxuryVillaAcImg,
     metricsEn: 'Zero catastrophic AC failures across 2 consecutive summers',
     metricsAr: 'انعدام أي توقف مفاجئ لمكيفات المجمع على مدار موسمي صيف متتاليين',
     descriptionEn: 'Multi-year turnkey Annual Maintenance Contract (AMC) managing over 250 ducted split and package AC units, domestic booster pumps, solar water heating systems, and electrical distribution boards with 24/7 on-call dispatch.',
