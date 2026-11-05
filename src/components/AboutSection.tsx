@@ -2,6 +2,7 @@ import React from 'react';
 import { ShieldCheck, Award, Users, Clock, Building2, Phone } from 'lucide-react';
 import { Language } from '../types';
 import { translations } from '../data/translations';
+import { VayraLogo } from './VayraLogo';
 
 interface AboutSectionProps {
   language: Language;
@@ -64,10 +65,9 @@ export const AboutSection: React.FC<AboutSectionProps> = ({ language }) => {
           {/* Headquarters & Authority Sidebar Box */}
           <div className="lg:col-span-5 bg-white dark:bg-neutral-800 rounded-lg p-6 sm:p-8 border border-neutral-200 dark:border-neutral-700 shadow-sm">
             <div className="flex items-center gap-3.5 mb-6 pb-4 border-b border-neutral-200 dark:border-neutral-700">
-              <img
-                src="/logo.svg"
-                alt="Vayra Emblem"
-                className="w-12 h-12 rounded-full p-1 bg-neutral-100 dark:bg-neutral-900 border border-neutral-200 dark:border-neutral-700 shrink-0"
+              <VayraLogo
+                size={48}
+                className="p-1 bg-neutral-100 dark:bg-neutral-900 border border-neutral-200 dark:border-neutral-700 rounded-full shrink-0"
               />
               <div>
                 <h3 className="text-base font-bold text-neutral-900 dark:text-white">
