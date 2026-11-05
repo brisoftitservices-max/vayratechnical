@@ -2,6 +2,7 @@ import React from 'react';
 import { ArrowRight, Phone, ShieldCheck, MapPin } from 'lucide-react';
 import { Language } from '../types';
 import { translations } from '../data/translations';
+import heroBgImage from '../assets/images/hero_hvac_mep_1793794632219.jpg';
 
 interface HeroProps {
   language: Language;
@@ -17,7 +18,7 @@ export const Hero: React.FC<HeroProps> = ({ language, onRequestQuote, onExploreS
       {/* Background Photography with High Contrast Scrim */}
       <div className="absolute inset-0 z-0">
         <img
-          src="/src/assets/images/hero_hvac_mep_1793794632219.jpg"
+          src={heroBgImage}
           alt="Commercial rooftop HVAC chillers and MEP plant overlooking Abu Dhabi"
           referrerPolicy="no-referrer"
           className="w-full h-full object-cover object-center scale-105 transform motion-safe:transition-transform motion-safe:duration-1000"
@@ -32,9 +33,13 @@ export const Hero: React.FC<HeroProps> = ({ language, onRequestQuote, onExploreS
           {/* Quiet Clean Unboxed Location Kicker with Official Logo (Anti-Pill compliant) */}
           <div className="flex items-center gap-2.5 text-xs sm:text-sm font-medium text-amber-400 mb-4 tracking-wide">
             <img
-              src="/logo.svg"
+              src="./logo.svg"
               alt="Vayra Logo"
               className="w-7 h-7 rounded-full bg-white/10 p-0.5 shrink-0"
+              onError={(e) => {
+                // Fallback if svg path fails on subfolder
+                (e.target as HTMLImageElement).src = 'logo.svg';
+              }}
             />
             <span className="flex items-center gap-1.5">
               <MapPin className="w-3.5 h-3.5 shrink-0 text-amber-400" />
