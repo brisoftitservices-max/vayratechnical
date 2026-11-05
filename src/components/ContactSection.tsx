@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
-import { MapPin, Phone, Mail, Clock, Send, MessageCircle, CheckCircle, AlertTriangle, Building, PhoneCall } from 'lucide-react';
+import { MapPin, Phone, Mail, Clock, Send, MessageCircle, CheckCircle, AlertTriangle, Building, PhoneCall, ExternalLink } from 'lucide-react';
 import { Language, QuoteFormState } from '../types';
 import { translations } from '../data/translations';
+import { VayraLogo } from './VayraLogo';
 
 interface ContactSectionProps {
   language: Language;
@@ -31,6 +32,7 @@ export const ContactSection: React.FC<ContactSectionProps> = ({
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitted, setSubmitted] = useState(false);
   const [inquiryRef, setInquiryRef] = useState<string>('');
+  const [deliveryMode, setDeliveryMode] = useState<'server' | 'web3forms' | 'static_direct' | ''>('');
   const [errors, setErrors] = useState<Record<string, string>>({});
 
   useEffect(() => {
@@ -74,26 +76,70 @@ export const ContactSection: React.FC<ContactSectionProps> = ({
     if (!validate()) return;
 
     setIsSubmitting(true);
+    const generatedId = `INQ-${Math.floor(100000 + Math.random() * 900000)}`;
+    setInquiryRef(generatedId);
+    let sentSuccess = false;
+
+    // Tier 1: Try local Express server endpoint (/api/inquiry)
     try {
       const response = await fetch('/api/inquiry', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify(formState),
+        body: JSON.stringify({ ...formState, inquiryId: generatedId }),
       });
       if (response.ok) {
         const data = await response.json();
         if (data.inquiryId) {
           setInquiryRef(data.inquiryId);
         }
+        setDeliveryMode('server');
+        sentSuccess = true;
       }
-    } catch (err) {
-      console.warn('Network notice: falling back to client-side notification confirmation', err);
-    } finally {
-      setIsSubmitting(false);
-      setSubmitted(true);
+    } catch {
+      // Expected on static hosting like GitHub Pages
     }
+
+    // Tier 2: Static Form Service (Web3Forms) if configured for GitHub Pages
+    if (!sentSuccess) {
+      const web3Key = (import.meta.env.VITE_WEB3FORMS_ACCESS_KEY as string) || '';
+      if (web3Key) {
+        try {
+          const w3Res = await fetch('https://api.web3forms.com/submit', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              'Accept': 'application/json',
+            },
+            body: JSON.stringify({
+              access_key: web3Key,
+              name: formState.fullName,
+              email: formState.email,
+              phone: formState.phone,
+              subject: `[Web RFQ - Ref: ${generatedId}] ${formState.serviceCategory} - ${formState.fullName}`,
+              message: `Inquiry Reference: ${generatedId}\nClient: ${formState.fullName}\nPhone: ${formState.phone}\nEmail: ${formState.email}\nProperty: ${formState.propertyType}\nService: ${formState.serviceCategory}\nUrgency: ${formState.urgency}\nEstimated Budget: ${formState.estimatedBudget || 'N/A'}\n\nProject Scope:\n${formState.message || 'No additional details provided.'}\n\nOffice Address: Al Maha Tower, Abu Dhabi, UAE\nDirect Technical Desk: +971 50 639 8552`,
+              from_name: 'Vayra Technical Contracting Web Portal',
+              reply_to: formState.email,
+            }),
+          });
+          if (w3Res.ok) {
+            setDeliveryMode('web3forms');
+            sentSuccess = true;
+          }
+        } catch {
+          // Handled by static direct tier
+        }
+      }
+    }
+
+    // Tier 3: Static direct dispatch (GitHub Pages mode)
+    if (!sentSuccess) {
+      setDeliveryMode('static_direct');
+    }
+
+    setIsSubmitting(false);
+    setSubmitted(true);
   };
 
   const whatsappMessage = encodeURIComponent(
@@ -132,11 +178,7 @@ export const ContactSection: React.FC<ContactSectionProps> = ({
             
             <div className="bg-white dark:bg-neutral-950 p-6 sm:p-7 rounded-lg border border-neutral-200 dark:border-neutral-800 shadow-sm space-y-6">
               <div className="flex items-center gap-3.5 pb-4 border-b border-neutral-200 dark:border-neutral-800">
-                <img
-                  src="/logo.svg"
-                  alt="Vayra Emblem"
-                  className="w-12 h-12 rounded-full p-1 bg-neutral-100 dark:bg-neutral-900 border border-neutral-200 dark:border-neutral-700 shrink-0"
-                />
+                <VayraLogo size={44} className="p-1 bg-neutral-100 dark:bg-neutral-900 border border-neutral-200 dark:border-neutral-700 rounded-full shrink-0" />
                 <div>
                   <h3 className="text-base font-bold text-neutral-900 dark:text-white">
                     {t.contact.officeCardTitle}
@@ -270,37 +312,56 @@ export const ContactSection: React.FC<ContactSectionProps> = ({
                   </div>
                 )}
                 <div className="p-4 bg-neutral-100 dark:bg-neutral-900 rounded-lg max-w-md mx-auto border border-neutral-200 dark:border-neutral-800 text-xs sm:text-sm text-neutral-700 dark:text-neutral-300 space-y-2">
-                  <p className="font-semibold text-emerald-700 dark:text-emerald-400 flex items-center justify-center gap-1.5">
-                    <CheckCircle className="w-4 h-4 shrink-0" />
-                    {language === 'en'
-                      ? 'Email notification dispatched to info@vayratechnical.com'
-                      : 'تم إرسال إشعار فوري إلى info@vayratechnical.com'}
-                  </p>
+                  {deliveryMode === 'server' || deliveryMode === 'web3forms' ? (
+                    <p className="font-semibold text-emerald-700 dark:text-emerald-400 flex items-center justify-center gap-1.5">
+                      <CheckCircle className="w-4 h-4 shrink-0" />
+                      {language === 'en'
+                        ? 'Email notification dispatched to info@vayratechnical.com'
+                        : 'تم إرسال إشعار فوري إلى info@vayratechnical.com'}
+                    </p>
+                  ) : (
+                    <div className="space-y-1.5">
+                      <p className="font-semibold text-amber-600 dark:text-amber-400 flex items-center justify-center gap-1.5">
+                        <AlertTriangle className="w-4 h-4 shrink-0" />
+                        {language === 'en'
+                          ? 'Inquiry Prepared for info@vayratechnical.com'
+                          : 'تم تجهيز الطلب لإرساله إلى info@vayratechnical.com'}
+                      </p>
+                      <p className="text-[11px] text-neutral-500 dark:text-neutral-400">
+                        {language === 'en'
+                          ? 'Transmit your RFQ directly using 1-click email or WhatsApp below:'
+                          : 'يرجى تأكيد إرسال الطلب بنقرة واحدة عبر البريد أو الواتساب أدناه:'}
+                      </p>
+                    </div>
+                  )}
                   <p className="text-neutral-500 dark:text-neutral-400 text-xs">
                     {t.contact.successMsg} <span className="font-semibold text-neutral-900 dark:text-white">{formState.phone}</span>.
                   </p>
                 </div>
-                <div className="pt-3 flex flex-wrap items-center justify-center gap-2.5">
+                <div className="pt-3 flex flex-col sm:flex-row items-center justify-center gap-2.5 max-w-md mx-auto">
+                  <a
+                    href={`mailto:info@vayratechnical.com?subject=${emailNotificationSubject}&body=${emailNotificationBody}`}
+                    className="w-full sm:w-auto inline-flex items-center justify-center gap-1.5 px-4 py-2.5 text-xs font-semibold text-neutral-950 bg-amber-400 hover:bg-amber-300 rounded-md transition-colors shadow-sm"
+                  >
+                    <Mail className="w-4 h-4 text-neutral-950" />
+                    <span>Send to info@vayratechnical.com</span>
+                  </a>
                   <a
                     href={`https://wa.me/971506398552?text=${whatsappMessage}`}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="inline-flex items-center gap-1.5 px-3.5 py-2 text-xs font-semibold text-white bg-emerald-600 hover:bg-emerald-500 rounded-md transition-colors"
+                    className="w-full sm:w-auto inline-flex items-center justify-center gap-1.5 px-4 py-2.5 text-xs font-semibold text-white bg-emerald-600 hover:bg-emerald-500 rounded-md transition-colors shadow-sm"
                   >
-                    <MessageCircle className="w-3.5 h-3.5" />
+                    <MessageCircle className="w-4 h-4" />
                     <span>{t.contact.whatsappDirectBtn}</span>
                   </a>
-                  <a
-                    href={`mailto:info@vayratechnical.com?subject=${emailNotificationSubject}&body=${emailNotificationBody}`}
-                    className="inline-flex items-center gap-1.5 px-3.5 py-2 text-xs font-semibold text-neutral-900 dark:text-white bg-neutral-200 dark:bg-neutral-800 hover:bg-neutral-300 dark:hover:bg-neutral-700 rounded-md transition-colors"
-                  >
-                    <Mail className="w-3.5 h-3.5 text-amber-500" />
-                    <span>info@vayratechnical.com</span>
-                  </a>
+                </div>
+                <div className="pt-2">
                   <button
                     onClick={() => {
                       setSubmitted(false);
                       setInquiryRef('');
+                      setDeliveryMode('');
                       setFormState({
                         fullName: '',
                         email: '',
@@ -311,7 +372,7 @@ export const ContactSection: React.FC<ContactSectionProps> = ({
                         message: '',
                       });
                     }}
-                    className="px-3.5 py-2 text-xs font-medium text-neutral-600 dark:text-neutral-400 hover:text-neutral-900 dark:hover:text-white transition-colors"
+                    className="px-3.5 py-1.5 text-xs font-medium text-neutral-500 dark:text-neutral-400 hover:text-neutral-900 dark:hover:text-white transition-colors"
                   >
                     {t.contact.resetBtn}
                   </button>
