@@ -1,6 +1,7 @@
 import React from 'react';
 import { X, Printer, MessageCircle, ArrowRight, ShieldCheck, FileText } from 'lucide-react';
 import { Language } from '../types';
+import { VayraLogo } from './VayraLogo';
 
 interface EstimateSummaryModalProps {
   isOpen: boolean;
@@ -65,11 +66,7 @@ export const EstimateSummaryModal: React.FC<EstimateSummaryModalProps> = ({
         {/* Formal Corporate Header */}
         <div className="flex items-start justify-between pb-6 border-b border-neutral-200 dark:border-neutral-700 mb-6">
           <div className="flex items-center gap-3">
-            <img
-              src="/logo.svg"
-              alt="Vayra Logo"
-              className="w-12 h-12 rounded-full p-1 bg-neutral-100 dark:bg-neutral-800 border border-neutral-200 dark:border-neutral-700 shrink-0"
-            />
+            <VayraLogo size={48} className="p-1 bg-neutral-100 dark:bg-neutral-800 border border-neutral-200 dark:border-neutral-700 rounded-full shrink-0" />
             <div>
               <h2 className="text-base sm:text-lg font-bold text-neutral-900 dark:text-white print:text-black">
                 {language === 'en' ? 'Vayra Technical Contracting' : 'فايرا للمقاولات الفنية'}
